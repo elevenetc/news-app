@@ -1,18 +1,17 @@
 package com.elevenetc.android.news.features.list
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.elevenetc.android.news.R
+import com.elevenetc.android.news.core.images.ImagesLoader
 import com.elevenetc.android.news.core.models.Article
 import com.elevenetc.android.news.core.utils.updateRange
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_article.view.*
 
-class Adapter() : RecyclerView.Adapter<Adapter.VH>() {
+class Adapter(val imagesLoader: ImagesLoader) : RecyclerView.Adapter<Adapter.VH>() {
 
     private val data = mutableListOf<Article>()
 
@@ -83,7 +82,7 @@ class Adapter() : RecyclerView.Adapter<Adapter.VH>() {
         return if (viewType == typeItem) {
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.item_article, parent, false)
-            ItemVH(view)
+            ItemVH(view, imagesLoader)
         } else {
             FooterVH(RetryProgressView(parent.context))
         }
@@ -102,23 +101,13 @@ class Adapter() : RecyclerView.Adapter<Adapter.VH>() {
         }
     }
 
-    class ItemVH(view: View) : VH(view) {
+    class ItemVH(view: View, val imagesLoader: ImagesLoader) : VH(view) {
         fun bind(
             article: Article,
             itemClickHandler: (Article) -> Unit
         ) {
 
-            if (article.image.isNotEmpty()) {
-                Picasso.get()
-                    .load(article.image)
-                    .placeholder(R.drawable.round_photo_camera_black_24)
-                    .fit().centerCrop().noFade()
-                    .into(itemView.imageView)
-            } else {
-                Picasso.get()
-                    .load(R.drawable.round_photo_camera_black_24)
-                    .into(itemView.imageView)
-            }
+            imagesLoader.loadArticleItem(article, itemView.imageView)
 
             itemView.textTitle.text = article.title
                 .ifEmpty { itemView.context.getString(R.string.list_empty_title) }

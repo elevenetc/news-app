@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.elevenetc.android.news.R
 import com.elevenetc.android.news.core.BaseFragment
 import com.elevenetc.android.news.features.details.DetailsViewModel.State
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_details.*
 
 class DetailsFragment : BaseFragment(R.layout.fragment_details) {
@@ -45,11 +44,7 @@ class DetailsFragment : BaseFragment(R.layout.fragment_details) {
             textDescription.text = article.description
                 .ifEmpty { getString(R.string.details_empty_description) }
 
-            if (article.image.isNotEmpty()) {
-                Picasso.get()
-                    .load(article.image)
-                    .into(imageViewHead)
-            }
+            appComponent.images().loadArticleItem(article, imageViewHead)
 
         } else if (state is State.NoResult) {
             AlertDialog.Builder(activity!!)

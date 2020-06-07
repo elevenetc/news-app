@@ -3,6 +3,8 @@ package com.elevenetc.android.news.core.di
 import android.content.Context
 import com.elevenetc.android.news.core.cache.ArticlesCache
 import com.elevenetc.android.news.core.cache.ArticlesCacheImpl
+import com.elevenetc.android.news.core.images.ImagesLoader
+import com.elevenetc.android.news.core.images.ImagesLoaderImpl
 import com.elevenetc.android.news.core.logging.Logger
 import com.elevenetc.android.news.core.logging.LoggerImpl
 import com.elevenetc.android.news.core.repositories.ArticlesRepository
@@ -17,9 +19,14 @@ import javax.inject.Singleton
 class AppModule(private val appContext: Context) {
 
     @Provides
+    @Singleton
+    fun images(inst: ImagesLoaderImpl): ImagesLoader = inst
+
+    @Provides
     fun schedulers(inst: SchedulersImpl): Schedulers = inst
 
     @Provides
+    @Singleton
     fun logger(inst: LoggerImpl): Logger = inst
 
     @Provides

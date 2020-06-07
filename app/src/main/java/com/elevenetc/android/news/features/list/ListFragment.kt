@@ -23,7 +23,7 @@ class ListFragment : BaseFragment(R.layout.fragment_list) {
     private var page = 0
     private var pageSize = 20
     private var reachedEnd = false
-    private val adapter = Adapter()
+    private val adapter = Adapter(appComponent.images())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
