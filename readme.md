@@ -8,8 +8,8 @@ App source code is focused to show off scalable and testable architecture. App i
 - basic offline (in memory) mode
 - easy replacable third party libraries (`Picasso`)
 - easy replacable api imlepementations (`newsapi.org`)
-- tested of data layer
-- tested of list viewmodel
+- tested data layer
+- tested list viewmodel
 
 ## Setup
 Create file `./news.api.org.config` with [newsapi.org](https://newsapi.org/) api key:
