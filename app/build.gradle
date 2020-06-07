@@ -22,6 +22,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        all {
+            final newsApiOrgConfig = getProperties('news.api.org.config')
+            final newsApiOrgApiKey = newsApiOrgConfig.getProperty('api.key')
+
+            buildConfigField 'String', 'NEWSAPIORG_API_KEY', "\"$newsApiOrgApiKey\""
+        }
     }
 
     testOptions {
@@ -88,4 +94,16 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$verRxAndroid"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$verLifecycle"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$verLifecycle"
+}
+
+def getProperties(name) {
+
+    if (!project.rootProject.file(name).exists()) {
+        def errorMessage = name + " file is not found. Read more at https://github.com/elevenetc/news-app"
+        throw new FileNotFoundException(errorMessage)
+    }
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file(name).newDataInputStream())
+    return properties
 }

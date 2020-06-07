@@ -1,5 +1,6 @@
 package com.elevenetc.android.news.core.api.newsapi
 
+import com.elevenetc.android.news.BuildConfig
 import com.elevenetc.android.news.core.api.NewsApi
 import com.squareup.moshi.*
 import dagger.Module
@@ -54,7 +55,7 @@ class NewsApiOrgModule {
     @Named(Names.API_KEY)
     @Provides
     fun apiKey(): String {
-        return "6c1f328d50c14011bb7aaecdea767e8c"
+        return BuildConfig.NEWSAPIORG_API_KEY
     }
 
     object Names {
