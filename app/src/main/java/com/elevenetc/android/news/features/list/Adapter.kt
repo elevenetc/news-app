@@ -1,10 +1,9 @@
 package com.elevenetc.android.news.features.list
 
-import android.util.Log
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.elevenetc.android.news.R
@@ -13,30 +12,25 @@ import com.elevenetc.android.news.core.utils.updateRange
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_article.view.*
 
-class Adapter : RecyclerView.Adapter<Adapter.VH>() {
+class Adapter() : RecyclerView.Adapter<Adapter.VH>() {
 
     private val data = mutableListOf<Article>()
-    private val tag = "tagz"
 
     private var loadingDone = false
+    private var errorState = false
     private val typeItem = 0
     private val typeProgress = 1
 
-    fun setLoading(loading: Boolean) {
-        if (data.isEmpty()) return
-        val added = !this.loadingDone && loading
-        val removed = this.loadingDone && !loading
-        this.loadingDone = loading
-        if (added) {
-            notifyItemInserted(data.size - 1)
-        } else if (removed) {
-            notifyItemRemoved(data.size - 1)
-        }
+    var retryHandler: () -> Unit = {}
+    var itemClickHandler: (Article) -> Unit = {}
+
+    fun setErrorState(value: Boolean) {
+        errorState = value
+        notifyItemChanged(data.size)
     }
 
-    fun setLoadingDone() {
-        loadingDone = true
-        notifyItemRemoved(data.size)
+    fun isEmpty(): Boolean {
+        return data.isEmpty()
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -49,9 +43,6 @@ class Adapter : RecyclerView.Adapter<Adapter.VH>() {
 
     fun append(articles: List<Article>) {
         if (articles.isEmpty()) return
-
-        Log.d("tagz", "append")
-
         insertNewDiff(data + articles)
     }
 
@@ -88,16 +79,13 @@ class Adapter : RecyclerView.Adapter<Adapter.VH>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
 
-        val inflater = LayoutInflater.from(parent.context)
 
-        return if (viewType == 0) {
+        return if (viewType == typeItem) {
+            val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.item_article, parent, false)
             ItemVH(view)
         } else {
-            val view = TextView(parent.context)
-            view.text = "LOADING"
-            view.textSize = 100f
-            ProgressVH(view)
+            FooterVH(RetryProgressView(parent.context))
         }
     }
 
@@ -108,31 +96,51 @@ class Adapter : RecyclerView.Adapter<Adapter.VH>() {
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         if (holder is ItemVH) {
-            holder.bind(data[position], position)
+            holder.bind(data[position], itemClickHandler)
+        } else if (holder is FooterVH) {
+            holder.bind(errorState, this)
         }
     }
 
-
     class ItemVH(view: View) : VH(view) {
-        fun bind(article: Article, pos: Int) {
+        fun bind(
+            article: Article,
+            itemClickHandler: (Article) -> Unit
+        ) {
 
             if (article.image.isNotEmpty()) {
                 Picasso.get()
                     .load(article.image)
+                    .placeholder(R.drawable.round_photo_camera_black_24)
+                    .fit().centerCrop().noFade()
+                    .into(itemView.imageView)
+            } else {
+                Picasso.get()
+                    .load(R.drawable.round_photo_camera_black_24)
                     .into(itemView.imageView)
             }
 
-            itemView.textTitle.text = (pos.toString() + ":" + article.title)
+            itemView.textTitle.text = article.title
+                .ifEmpty { itemView.context.getString(R.string.list_empty_title) }
+            itemView.setOnClickListener { itemClickHandler(article) }
         }
     }
 
-    class ProgressVH(view: View) : VH(view) {
-
+    class FooterVH(private val retryProgress: RetryProgressView) : VH(retryProgress) {
+        fun bind(
+            errorState: Boolean,
+            adapter: Adapter
+        ) {
+            retryProgress.retryHandler = { adapter.retryHandler() }
+            if (errorState) {
+                retryProgress.showError()
+            } else {
+                retryProgress.showProgress()
+            }
+        }
     }
 
-    open class VH(view: View) : RecyclerView.ViewHolder(view) {
-
-    }
+    open class VH(view: View) : RecyclerView.ViewHolder(view)
 
     private class DiffCallback(val newList: List<Article>, val oldList: List<Article>) :
         DiffUtil.Callback() {

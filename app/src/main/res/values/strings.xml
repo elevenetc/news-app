@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">assignment-newsapp</string>
+
+    <!-- Common -->
+    <string name="app_name">News</string>
+    <string name="ok">OK</string>
+
+    <!-- List -->
+    <string name="list_empty_title">No Title</string>
+    <string name="list_empty_no_articles">No news for today</string>
+
+    <!-- Details -->
+    <string name="details_empty_title">No Title</string>
+    <string name="details_empty_description">No Description</string>
+    <string name="details_error_article_loading">Sorry, unable to load article</string>
+    <string name="details_no_article_found">Sorry, no article found</string>
+
+
 </resources>

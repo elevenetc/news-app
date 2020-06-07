@@ -17,7 +17,7 @@ import javax.inject.Named
 class NewsApiOrgModule {
 
     @Provides
-    fun newsApi(inst: NewsApiOrgProvider): NewsApi = inst
+    fun newsApi(inst: NewsApiImpl): NewsApi = inst
 
     @Provides
     fun retrofitApi(@Named(Names.ENDPOINT) endpoint: String): NewsApiOrg {

@@ -1,6 +1,7 @@
 package com.elevenetc.android.news.core.cache
 
 import com.elevenetc.android.news.core.models.Article
+import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -25,8 +26,12 @@ class ArticlesCacheImpl @Inject constructor() : ArticlesCache {
         return Single.just(result)
     }
 
-    override fun get(id: String): Single<Article> {
-        return Single.just(articles[id])
+    override fun get(id: String): Maybe<Article> {
+        return if (articles.containsKey(id)) {
+            Maybe.just(articles[id])
+        } else {
+            Maybe.empty()
+        }
     }
 
 }

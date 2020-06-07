@@ -7,7 +7,7 @@ import com.elevenetc.android.news.core.scheduling.Schedulers
 import com.elevenetc.android.news.core.usecases.GetArticles
 import com.elevenetc.android.news.features.list.ListViewModel.Action
 import com.elevenetc.android.news.features.list.ListViewModel.State
-import com.elevenetc.android.news.features.list.ListViewModel.State.Idle
+import com.elevenetc.android.news.features.list.ListViewModel.State.Init
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ class ListViewModelImpl @Inject constructor(
     private val logger: Logger
 ) : ListViewModel, androidx.lifecycle.ViewModel() {
 
-    override val state = MutableLiveData<State>(Idle)
+    override val state = MutableLiveData<State>(Init)
     private val subs = CompositeDisposable()
 
     override fun onCleared() {
@@ -25,12 +25,11 @@ class ListViewModelImpl @Inject constructor(
     }
 
     override fun onAction(action: Action) {
-        reduce(action, state.value!!)
+        reduce(action, state.value)
     }
 
-    private fun reduce(action: Action, currentState: State) {
-
-        if (currentState is Idle && action is Action.GetArticles) {
+    private fun reduce(action: Action, currentState: State?) {
+        if (currentState is Init && action is Action.GetArticles) {
             getArticles(action.page, action.pageSize)
         } else if (currentState is State.CachedResult && action is Action.GetArticles) {
             getArticles(action.page, action.pageSize)
@@ -46,7 +45,7 @@ class ListViewModelImpl @Inject constructor(
     }
 
     private fun updateCurrentState(newState: State) {
-        state.postValue(newState)
+        state.value = newState
     }
 
     private fun getArticles(page: Int, pageSize: Int) {
@@ -61,10 +60,10 @@ class ListViewModelImpl @Inject constructor(
                 .subscribe({ result ->
 
                     when (result) {
-                        is Cached -> {
+                        is CachedList -> {
                             updateCurrentState(State.CachedResult(result.data, page, pageSize))
                         }
-                        is Network -> {
+                        is NetworkList -> {
                             updateCurrentState(State.NetworkResult(result.data, page, pageSize))
                         }
                         is NetworkError -> {

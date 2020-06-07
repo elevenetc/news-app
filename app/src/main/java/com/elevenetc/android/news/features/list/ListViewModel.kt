@@ -9,11 +9,12 @@ interface ListViewModel {
     fun onAction(action: Action)
 
     sealed class Action {
+        object OnInit : Action()
         data class GetArticles(val page: Int, val pageSize: Int) : Action()
     }
 
     sealed class State {
-        object Idle : State()
+        object Init : State()
         object Loading : State()
         data class CachedResult(val data: List<Article>, val page: Int, val pageSize: Int) : State()
         data class NetworkResult(val data: List<Article>, val page: Int, val pageSize: Int) : State()

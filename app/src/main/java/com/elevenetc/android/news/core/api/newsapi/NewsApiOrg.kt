@@ -18,14 +18,14 @@ interface NewsApiOrg {
     data class Headlines(val articles: List<Article>)
 
     data class Article(
-        val title: String,
-        val author: String,
-        val source: Source,
-        val description: String,
-        val url: String,
-        val urlToImage: String,
+        val title: String = "",
+        val author: String = "",
+        val description: String = "",
+        val url: String = "",
+        val urlToImage: String = "",
+        val content: String = "",
         val publishedAt: Date,
-        val content: String
+        val source: Source
     )
 
     data class Source(
