@@ -74,7 +74,7 @@ object NullSafetyAdapter {
 }
 
 private class DateAdapter : JsonAdapter<Date>() {
-    private val dateFormat = SimpleDateFormat(SERVER_FORMAT, Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
 
     @FromJson
     override fun fromJson(reader: JsonReader): Date? {
@@ -91,9 +91,5 @@ private class DateAdapter : JsonAdapter<Date>() {
         if (value != null) {
             writer.value(value.toString())
         }
-    }
-
-    companion object {
-        const val SERVER_FORMAT = ("yyyy-MM-dd'T'HH:mm:ssZ")
     }
 }

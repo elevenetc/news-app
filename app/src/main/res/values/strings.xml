@@ -10,9 +10,10 @@
 
     <!-- Details -->
     <string name="details_empty_title">No Title</string>
-    <string name="details_empty_description">No Description</string>
+    <string name="details_empty_content">No content.</string>
     <string name="details_error_article_loading">Sorry, unable to load article</string>
     <string name="details_no_article_found">Sorry, no article found</string>
+    <string name="details_btn_open_url">Open full article</string>
 
 
 </resources>

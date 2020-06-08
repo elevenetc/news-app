@@ -19,7 +19,11 @@ class ModelsMapper {
             genId(article),
             article.title,
             article.description,
-            article.urlToImage
+            article.urlToImage,
+            article.url,
+            article.author,
+            article.content,
+            article.publishedAt
         )
     }
 
