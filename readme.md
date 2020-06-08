@@ -3,6 +3,8 @@
 App source code is focused to show off scalable and testable architecture. App is divided into layers and features so each layer and feature could be developed by either dedicated team or a developer. Some interfaces might be excessive.
 
 ![./docs/architecture.png](./docs/architecture.png)
+![./docs/screen-list.png](./docs/screen-list.png)
+![./docs/screen-details.png](./docs/screen-details.png)
 
 - two screens: list of news headlins, details screen
 - basic offline (in memory) mode
